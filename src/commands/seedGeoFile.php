@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use PDO;
 use Symfony\Component\Console\Helper\ProgressBar;
+use const PHP_EOL;
 
 class seedGeoFile extends Command
 {
@@ -97,6 +98,7 @@ class seedGeoFile extends Command
         
         if ($this->driver == 'mysql') {
             $sql = "INSERT INTO {$this->getFullyQualifiedTableName()} ( {$this->getColumnsAsStringDelimated('`')} ) VALUES ( {$this->getColumnsAsStringDelimated(':', true)} )";
+            echo $sql . PHP_EOL;
         }
 
         return [$this->pdo->prepare($sql), $sql];
