@@ -2,6 +2,7 @@
 
 namespace Igaster\LaravelCities\commands;
 
+use Doctrine\DBAL\Driver\PDOConnection;
 use Exception;
 use Igaster\LaravelCities\commands\helpers\geoCollection;
 use Igaster\LaravelCities\commands\helpers\geoItem;
@@ -10,14 +11,37 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use PDO;
 use Symfony\Component\Console\Helper\ProgressBar;
+use function config;
+use function count;
+use function dd;
+use function dump;
+use function explode;
+use function fgetcsv;
+use function fgets;
+use function filesize;
+use function fopen;
+use function ftell;
+use function implode;
+use function in_array;
+use function is_numeric;
+use function microtime;
+use function sprintf;
+use function storage_path;
+use function str_repeat;
+use function strpos;
+use function strtolower;
+use function strtoupper;
+use function substr;
 use const PHP_EOL;
 
 class seedGeoFile extends Command
 {
-    protected $signature = 'geo:seed {country?} {--append} {--chunk=1000}';
+    protected $signature = 'geo:seed {country?} {--append} {--chunk=1000} {--insert-mode=default} {--skip-non-empty}';
     protected $description = 'Load + Parse + Save to DB a geodata file.';
 
+    /** @var PDOConnection */
     private $pdo;
+
     private $driver;
 
     private $geoItems;
@@ -29,7 +53,7 @@ class seedGeoFile extends Command
     public function __construct()
     {
         parent::__construct();
-        
+
         $connection = config('database.default');
         $this->driver = strtolower(config("database.connections.{$connection}.driver"));
 
@@ -88,16 +112,23 @@ class seedGeoFile extends Command
         foreach ($columns as $column) {
             $modifiedColumns[] = $delimeter . $column . (($onlyPrefix) ? '' : $delimeter);
         }
-        
+
         return implode(',', $modifiedColumns);
     }
 
     public function getDBStatement() : array
     {
         $sql = "INSERT INTO {$this->getFullyQualifiedTableName()} ( {$this->getColumnsAsStringDelimated()} ) VALUES ( {$this->getColumnsAsStringDelimated(':', true)} )";
-        
+
+
         if ($this->driver == 'mysql') {
-            $sql = "INSERT INTO {$this->getFullyQualifiedTableName()} ( {$this->getColumnsAsStringDelimated('`')} ) VALUES ( {$this->getColumnsAsStringDelimated(':', true)} )";
+
+            $postfix =  $this->getInsertModePostfix();
+
+            $sql = "INSERT INTO {$this->getFullyQualifiedTableName()} ( {$this->getColumnsAsStringDelimated('`')} ) 
+                    VALUES ( {$this->getColumnsAsStringDelimated(':', true)} )
+                    $postfix
+                    ";
             echo $sql . PHP_EOL;
         }
 
@@ -135,7 +166,7 @@ class seedGeoFile extends Command
                 case 'ADM3':   // 8 sec
                 case 'PPLA':   // областные центры
                 case 'PPLA2':  // Корсунь
-                //case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
+                    //case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
                     // 185 sec
                     $this->geoItems->add(new geoItem($line, $this->geoItems));
                     $count++;
@@ -148,7 +179,7 @@ class seedGeoFile extends Command
                 $this->processItems($country);
             }
         }
-        
+
         $this->processItems($country);
 
         $progressBar->finish();
@@ -181,14 +212,23 @@ class seedGeoFile extends Command
         if (! Schema::hasTable('geo')) {
             return;
         }
-        
+
         $start = microtime(true);
         $country = strtoupper($this->argument('country'));
         $sourceName = $country ? $country : 'allCountries';
         $fileName = storage_path("geo/{$sourceName}.txt");
         $isAppend = $this->option('append');
+        $skipIfTableNonEmpty = $this->option('skip-non-empty');
 
         $this->chunkSize = $this->option('chunk');
+
+        if ($skipIfTableNonEmpty) {
+            if ($this->tableHasEntries()) {
+                $this->info("Table '{$this->getFullyQualifiedTableName()}' already contains entries. Seeding is skipped!...");
+                return;
+            }
+        }
+
 
         $this->info("Start seeding for $sourceName");
 
@@ -211,7 +251,7 @@ class seedGeoFile extends Command
 
         // Store Tree in DB
         //$this->writeToDb();
-        
+
         //Lets get back FOREIGN_KEY_CHECKS to laravel
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
@@ -233,7 +273,7 @@ class seedGeoFile extends Command
 //         if ($country != '') {
 //             $fileName = storage_path("geo/hierarchy-$country.txt");
 //         }
-        
+
         $this->info("Opening File '$fileName'</info>");
         $handle = fopen($fileName, 'r');
         $filesize = filesize($fileName);
@@ -282,18 +322,17 @@ class seedGeoFile extends Command
         $this->info(PHP_EOL . "Finished: {$count} Countries imported.  $countOrphan orphan items skiped</info>");
     }
 
+
     public function writeToDb()
     {
         // Store Tree in DB
         $this->info('Writing in Database</info>');
-        
         [$stmt, $sql] = $this->getDBStatement();
 
         $count = 0;
         $totalCount = count($this->geoItems->items);
 
         $progressBar = new ProgressBar($this->output, 100);
-
         foreach ($this->geoItems->items as $item) {
             $params = [
                 ':id' => $item->getId(),
@@ -322,5 +361,47 @@ class seedGeoFile extends Command
         }
 
         $progressBar->finish();
+    }
+
+    private function tableHasEntries()
+    {
+        $sql = "SELECT COUNT(*) as cnt from {$this->getFullyQualifiedTableName()}";
+        $stmt = $this->pdo->query($sql);
+        if($stmt->execute() === false) {
+            $error = "Error in SQL : '$sql'\n" . PDO::errorInfo() ;
+            throw new Exception($error, 1);
+        }
+        return $stmt->fetch(PDO::FETCH_ASSOC)['cnt'] > 0;
+    }
+
+    private function getInsertModePostfix()
+    {
+        $insertMode = $this->option('insert-mode');
+        if(!in_array($insertMode, ['default', 'update', 'ignore'])) {
+            throw  new Exception("Invalid insert mode $insertMode. 'default', 'update', 'ignore' insert modes are allowed");
+        }
+
+        if ($insertMode === 'update' ) {
+            return "
+                ON DUPLICATE KEY UPDATE 
+                 `parent_id` = VALUES(`parent_id`),
+                 `left` = VALUES(`left`),
+                 `right` = VALUES(`right`),
+                 `depth` = VALUES(`depth`),
+                 `name` = VALUES(`name`),
+                 `alternames` = VALUES(`alternames`),
+                 `country` = VALUES(`country`),
+                 `a1code` = VALUES(`a1code`),
+                 `level` = VALUES(`level`),
+                 `population` = VALUES(`population`),
+                 `lat` = VALUES(`lat`),
+                 `long` = VALUES(`long`),
+                 `timezone` = VALUES(`timezone`)
+                ";
+        }
+        if ($insertMode === 'ignore' ) {
+            return ' ON DUPLICATE KEY UPDATE id=id ';
+        }
+        return '';
     }
 }
