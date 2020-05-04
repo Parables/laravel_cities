@@ -3,6 +3,7 @@
 namespace Igaster\LaravelCities;
 
 use Igaster\LaravelCities\dbTree\EloquentTreeItem;
+use function is_null;
 
 class Geo extends EloquentTreeItem
 {
@@ -43,9 +44,13 @@ class Geo extends EloquentTreeItem
     {
         return $query->where('level', $level);
     }
-    public function scopeCities($query, $level)
+
+    public function scopeCities($query, $level = null)
     {
-        return $query->whereIn('level', self::LEVEL_CAPITAL, self::LEVEL_PPL . 'A', self::LEVEL_PPL . 'A2');
+        if (is_null($level)) {
+            return $query->whereIn('level', [self::LEVEL_CAPITAL, self::LEVEL_PPL . 'A', self::LEVEL_PPL . 'A2'])->orderByDesc('population');;
+        }
+        return $query->where('level', $level)->orderByDesc('population');
     }
 
 
