@@ -43,6 +43,11 @@ class Geo extends EloquentTreeItem
     {
         return $query->where('level', $level);
     }
+    public function scopeCities($query, $level)
+    {
+        return $query->whereIn('level', self::LEVEL_CAPITAL, self::LEVEL_PPL . 'A', self::LEVEL_PPL . 'A2');
+    }
+
 
     public function scopeDescendants($query)
     {

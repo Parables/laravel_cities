@@ -14,6 +14,8 @@ Route::group(['prefix' => 'geo'], function() {
 
     Route::get('country/{code}',	'\Igaster\LaravelCities\GeoController@country');
 
+    Route::get('country/{code}/cities',	'\Igaster\LaravelCities\GeoController@citiesOfCountry');
+
     Route::get('countries', 		'\Igaster\LaravelCities\GeoController@countries');
 
     Route::get('ancestors/{id}','\Igaster\LaravelCities\GeoController@ancestors');

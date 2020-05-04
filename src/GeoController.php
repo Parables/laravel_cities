@@ -49,6 +49,13 @@ class GeoController extends Controller
         return Response::json($geo);
     }
 
+    public function citiesOfCountry($code)
+    {
+        $cities = Geo::country($code)->cities()->get();
+        $this->applyFilter($cities);
+        return Response::json($cities);
+    }
+
     // [Collection] Get all countries
     public function countries()
     {
