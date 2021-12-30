@@ -1,9 +1,9 @@
 <?php
 
-namespace Igaster\LaravelCities\Tests;
+namespace Mdhesari\LaravelCities\Tests;
 
 use Dotenv\Dotenv;
-use Igaster\LaravelCities\GeoServiceProvider;
+use Mdhesari\LaravelCities\GeoServiceProvider;
 
 abstract class abstractTest extends \Orchestra\Testbench\TestCase {
 

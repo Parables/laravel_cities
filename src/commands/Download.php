@@ -1,6 +1,6 @@
 <?php
 
-namespace Igaster\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\commands;
 
 use Illuminate\Console\Command;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Igaster\LaravelCities;
+namespace Mdhesari\LaravelCities;
 
-use Igaster\LaravelCities\dbTree\EloquentTreeItem;
+use Mdhesari\LaravelCities\dbTree\EloquentTreeItem;
 
 class Geo extends EloquentTreeItem
 {

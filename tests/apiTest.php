@@ -1,8 +1,8 @@
 <?php
 
-namespace Igaster\LaravelCities\Tests;
+namespace Mdhesari\LaravelCities\Tests;
 
-use Igaster\LaravelCities\Geo;
+use Mdhesari\LaravelCities\Geo;
 
 class apiTest extends abstractTest
 {
@@ -18,7 +18,7 @@ class apiTest extends abstractTest
 
         //		// Register Service providers
         //        return [
-        //            \Igaster\LaravelCities\geoServiceProvider::class,
+        //            \Mdhesari\LaravelCities\geoServiceProvider::class,
         //        ];
     }
 

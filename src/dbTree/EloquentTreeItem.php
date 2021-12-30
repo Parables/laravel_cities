@@ -1,8 +1,8 @@
 <?php
 
-namespace Igaster\LaravelCities\dbTree;
+namespace Mdhesari\LaravelCities\dbTree;
 
-use Igaster\LaravelCities\Geo;
+use Mdhesari\LaravelCities\Geo;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class EloquentTreeItem extends Eloquent

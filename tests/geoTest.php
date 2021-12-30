@@ -1,8 +1,8 @@
 <?php
 
-namespace Igaster\LaravelCities\Tests;
+namespace Mdhesari\LaravelCities\Tests;
 
-use Igaster\LaravelCities\Geo;
+use Mdhesari\LaravelCities\Geo;
 
 class geoTest extends abstractTest
 {
@@ -14,7 +14,7 @@ class geoTest extends abstractTest
         $this->assertTrue(true);
     }
 
-    //-- Test: is instance of \Igaster\LaravelCities\geo
+    //-- Test: is instance of \Mdhesari\LaravelCities\geo
     public function testModel()
     {
         $model = Geo::create();

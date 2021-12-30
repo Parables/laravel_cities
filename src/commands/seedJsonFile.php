@@ -1,9 +1,9 @@
 <?php
 
-namespace Igaster\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\commands;
 
-use Igaster\LaravelCities\commands\helpers\geoCollection;
-use Igaster\LaravelCities\Geo;
+use Mdhesari\LaravelCities\commands\helpers\geoCollection;
+use Mdhesari\LaravelCities\Geo;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;

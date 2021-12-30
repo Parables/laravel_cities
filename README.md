@@ -19,14 +19,16 @@ What you dont get:
 	
 - Install with copmoser. Run:
 
-`composer require igaster/laravel_cities`
+main repository : `composer require igaster/laravel_cities`
+
+current repository : `composer require mdhesari/laravel-cities`
 
 The Service provider will be autodiscovered and registered by Laravel. If you are using Laravel version <5.5 then you  must manually add the Service Provider in app.php:
 
 ```php
 'providers' => [
     //...
-    Igaster\LaravelCities\GeoServiceProvider::class,
+    Mdhesari\LaravelCities\GeoServiceProvider::class,
 ];
 ```
 
@@ -107,7 +109,7 @@ Tip: You can get a json representation from the DB by quering the API (see below
 
 # Geo Model:
 
-You can use `Igaster\LaravelCities\Geo` Model to access the database. List of available properties:
+You can use `Mdhesari\LaravelCities\Geo` Model to access the database. List of available properties:
 
 ```php
 $geo->name;       // name of geographical point in plain ascii
@@ -127,7 +129,7 @@ Visit http://www.geonames.org > Info, for a more detailed description.
 
 ## Searching:
 ```php
-use Igaster\LaravelCities\Geo;
+use Mdhesari\LaravelCities\Geo;
 
 Geo::getCountries();               // Get a Collection of all countries
 Geo::getCountry('US');             // Get item by Country code
@@ -184,14 +186,14 @@ Geo::getCountry('GR')
 	->get();
 ```
 
-If you need more functionality you can extend `Igaster\LaravelCities\Geo` model and add your methods.
+If you need more functionality you can extend `Mdhesari\LaravelCities\Geo` model and add your methods.
 
 # HTTP API
 
 This package defines some API routes that can be used to query the DB through simple HTTP requests. To use them insert in your routes file:
 
 ```php
-\Igaster\LaravelCities\Geo::ApiRoutes();
+\Mdhesari\LaravelCities\Geo::ApiRoutes();
 ```
 
 For example if you insert them in your `routes\api.php` (recomended) then the following URLs will be registered:
@@ -245,7 +247,7 @@ In your main vue-app.js file add the component declaration:
 
 Alternative you may publish the component with
 
-`artisan vendor:publish --provider="Igaster\LaravelCities\GeoServiceProvider"`
+`artisan vendor:publish --provider="Mdhesari\LaravelCities\GeoServiceProvider"`
 
 Component will be exported at `/resources/LaravelCities/geo-select.vue` so that you can make modifications...
 

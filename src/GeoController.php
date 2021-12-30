@@ -1,6 +1,6 @@
 <?php
 
-namespace Igaster\LaravelCities;
+namespace Mdhesari\LaravelCities;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;

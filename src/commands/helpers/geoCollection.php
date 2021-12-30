@@ -1,6 +1,6 @@
 <?php
 
-namespace Igaster\LaravelCities\commands\helpers;
+namespace Mdhesari\LaravelCities\commands\helpers;
 
 class geoCollection
 {

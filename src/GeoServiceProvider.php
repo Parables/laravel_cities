@@ -1,6 +1,6 @@
 <?php
 
-namespace Igaster\LaravelCities;
+namespace Mdhesari\LaravelCities;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -30,10 +30,10 @@ class GeoServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
 
             $this->commands([
-                \Igaster\LaravelCities\commands\seedGeoFile::class,
-                \Igaster\LaravelCities\commands\seedJsonFile::class,
-                \Igaster\LaravelCities\commands\BuildPplTree::class,
-                \Igaster\LaravelCities\commands\Download::class,            ]);
+                \Mdhesari\LaravelCities\commands\seedGeoFile::class,
+                \Mdhesari\LaravelCities\commands\seedJsonFile::class,
+                \Mdhesari\LaravelCities\commands\BuildPplTree::class,
+                \Mdhesari\LaravelCities\commands\Download::class,            ]);
 
         }
     }

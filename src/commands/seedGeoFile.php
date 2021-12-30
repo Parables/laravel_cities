@@ -1,10 +1,10 @@
 <?php
 
-namespace Igaster\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\commands;
 
 use Exception;
-use Igaster\LaravelCities\commands\helpers\geoCollection;
-use Igaster\LaravelCities\commands\helpers\geoItem;
+use Mdhesari\LaravelCities\commands\helpers\geoCollection;
+use Mdhesari\LaravelCities\commands\helpers\geoItem;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;

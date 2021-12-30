@@ -1,6 +1,6 @@
 <?php
 
-namespace Igaster\LaravelCities\Tests;
+namespace Mdhesari\LaravelCities\Tests;
 
 class seedTest extends abstractTest
 {
