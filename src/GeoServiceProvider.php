@@ -49,7 +49,7 @@ class GeoServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(include __DIR__ . '/../routes/api.php');
+            ->group(__DIR__ . '/../routes/api.php');
     }
 
     /*--------------------------------------------------------------------------
