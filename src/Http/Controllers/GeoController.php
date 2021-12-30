@@ -6,15 +6,20 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
 use Mdhesari\LaravelCities\Models\Geo;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GeoController extends Controller
 {
     // [Geo] Get an item by $id
     public function item($id)
     {
-        $geo = Geo::find($id);
+        $geo = Geo::findOrFail($id);
+
         $this->applyFilter($geo);
-        return Response::json($geo);
+
+        return api()->success(null, [
+            'item' => $geo,
+        ]);
     }
 
     // [Collection] Get multiple items by ids (comma seperated string or array)
@@ -25,44 +30,70 @@ class GeoController extends Controller
         }
 
         $items = Geo::getByIds($ids);
-        return Response::json($items);
+
+        if (count($items) < 1) {
+            throw new NotfoundHttpException;
+        }
+
+        return api()->success(null, [
+            'items' => $items,
+        ]);
     }
 
     // [Collection] Get children of $id
     public function children($id)
     {
-        return $this->applyFilter(Geo::find($id)->getChildren());
+        $items = $this->applyFilter(Geo::findOrFail($id)->getChildren());
+
+        return api()->success(null, [
+            'items' => $items,
+        ]);
     }
 
     // [Geo] Get parent of  $id
     public function parent($id)
     {
-        $geo = Geo::find($id)->getParent();
+        $geo = Geo::findOrFail($id)->getParent();
+
         $this->applyFilter($geo);
-        return Response::json($geo);
+
+        return api()->success(null, [
+            'item' => $geo,
+        ]);
     }
 
     // [Geo] Get country by $code (two letter code)
     public function country($code)
     {
         $geo = Geo::getCountry($code);
+
         $this->applyFilter($geo);
-        return Response::json($geo);
+
+        return api()->success(null, [
+            'item' => $geo,
+        ]);
     }
 
     // [Collection] Get all countries
     public function countries()
     {
-        return $this->applyFilter(Geo::level(Geo::LEVEL_COUNTRY)->get());
+        return api()->success(null, [
+            'items' => $this->applyFilter(Geo::level(Geo::LEVEL_COUNTRY)->get()),
+        ]);
     }
 
     // [Collection] Search for %$name% in 'name' and 'alternames'. Optional filter to children of $parent_id
     public function search($name, $parent_id = null)
     {
         if ($parent_id) {
-            return $this->applyFilter(Geo::searchNames($name, Geo::find($parent_id)));
+            $items = $this->applyFilter(Geo::searchNames($name, Geo::findOrFail($parent_id)));
+        } else {
+            $items = $this->applyFilter(Geo::searchNames($name));
         }
-        return $this->applyFilter(Geo::searchNames($name));
+
+        return api()->success(null, [
+            'items' => $items,
+        ]);
     }
 
     public function ancestors($id)
@@ -98,7 +129,9 @@ class GeoController extends Controller
 
         $result = $this->applyFilter($result);
 
-        return $result;
+        return api()->success(null, [
+            'items' => $result,
+        ]);
     }
 
     public function breadcrumbs($id)
@@ -109,7 +142,9 @@ class GeoController extends Controller
 
         $ancestors = $this->applyFilter($ancestors);
 
-        return $ancestors;
+        return api()->success(null, [
+            'items' => $ancestors,
+        ]);
     }
 
     // Apply Filter from request to json representation of an item or a collection
@@ -137,6 +172,8 @@ class GeoController extends Controller
             }
         }
 
-        return $geo;
+        return api()->success(null, [
+            'item' => $geo,
+        ]);
     }
 }

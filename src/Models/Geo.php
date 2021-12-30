@@ -121,7 +121,7 @@ class Geo extends EloquentTreeItem
     // get Country by country Code (eg US,GR)
     public static function getCountry($countryCode)
     {
-        return self::level(self::LEVEL_COUNTRY)->country($countryCode)->first();
+        return self::level(self::LEVEL_COUNTRY)->country($countryCode)->firstOrFail();
     }
 
     // get multiple item by Ids
