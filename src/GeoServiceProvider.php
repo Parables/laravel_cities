@@ -14,7 +14,7 @@ class GeoServiceProvider extends ServiceProvider
      *
      * @var string|null
      */
-//    protected $namespace = 'Mdhesari\\LaravelCities\\Http\\Controllers';
+    protected $namespace;
 
     public function boot()
     {
