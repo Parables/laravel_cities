@@ -1,6 +1,6 @@
 <?php
 
-namespace Mdhesari\LaravelCities;
+namespace Mdhesari\LaravelCities\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;
@@ -76,7 +76,7 @@ class GeoController extends Controller
                 $locations = Geo::getCountries();
             } else {
                 $parent = $ancestor->getParent();
-                if (! $parent) {
+                if (!$parent) {
                     continue;
                 }
 

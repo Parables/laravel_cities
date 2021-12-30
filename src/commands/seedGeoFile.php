@@ -1,17 +1,17 @@
 <?php
 
-namespace Mdhesari\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\Commands;
 
 use Exception;
-use Mdhesari\LaravelCities\commands\helpers\geoCollection;
-use Mdhesari\LaravelCities\commands\helpers\geoItem;
+use Mdhesari\LaravelCities\Commands\Helpers\GeoCollection;
+use Mdhesari\LaravelCities\Commands\Helpers\GeoItem;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use PDO;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class seedGeoFile extends Command
+class SeedGeoFile extends Command
 {
     protected $signature = 'geo:seed {country?} {--append} {--chunk=1000}';
     protected $description = 'Load + Parse + Save to DB a geodata file.';
@@ -32,7 +32,7 @@ class seedGeoFile extends Command
         $connection = config('database.default');
         $this->driver = strtolower(config("database.connections.{$connection}.driver"));
 
-        $this->geoItems = new geoCollection();
+        $this->geoItems = new GeoCollection();
     }
 
     public function sql($sql)
@@ -135,7 +135,7 @@ class seedGeoFile extends Command
                 case 'PPLA2':  // Корсунь
                 //case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
                     // 185 sec
-                    $this->geoItems->add(new geoItem($line, $this->geoItems));
+                    $this->geoItems->add(new GeoItem($line, $this->geoItems));
                     $count++;
                     break;
             }

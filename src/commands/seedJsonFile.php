@@ -1,16 +1,16 @@
 <?php
 
-namespace Mdhesari\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\Commands;
 
-use Mdhesari\LaravelCities\commands\helpers\geoCollection;
-use Mdhesari\LaravelCities\Geo;
+use Mdhesari\LaravelCities\Commands\Helpers\GeoCollection;
+use Mdhesari\LaravelCities\Models\Geo;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use PDO;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class seedJsonFile extends Command
+class SeedJsonFile extends Command
 {
     protected $signature = 'geo:json {file?}';
     protected $description = 'Load a json file.';
@@ -19,16 +19,16 @@ class seedJsonFile extends Command
     {
         parent::__construct();
 
-        $this->geoItems = new geoCollection();
+        $this->geoItems = new GeoCollection();
     }
 
     public function handle()
     {
         $this->pdo = DB::connection()->getPdo(PDO::FETCH_ASSOC);
-        if (! Schema::hasTable('geo')) {
+        if (!Schema::hasTable('geo')) {
             return;
         }
-        
+
         $start = microtime(true);
 
         $filename = $this->argument('file');

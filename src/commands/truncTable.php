@@ -1,11 +1,11 @@
 <?php
 
-namespace Mdhesari\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class truncTable extends Command
+class TruncTable extends Command
 {
     /**
      * The name and signature of the console command.

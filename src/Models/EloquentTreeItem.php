@@ -1,11 +1,11 @@
 <?php
 
-namespace Mdhesari\LaravelCities\dbTree;
+namespace Mdhesari\LaravelCities\Models;
 
-use Mdhesari\LaravelCities\Geo;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Mdhesari\LaravelCities\Models\Geo;
+use Illuminate\Database\Eloquent\Model;
 
-class EloquentTreeItem extends Eloquent
+class EloquentTreeItem extends Model
 {
     // Properties:
     // id, parent_id, depth, left, right
@@ -44,10 +44,10 @@ class EloquentTreeItem extends Eloquent
         $count = 1;
         foreach (self::$items as $item) {
             if ($item->level == GEO::LEVEL_COUNTRY) {
-				$count = self::buildTree($item, $count);
-				if ($printTree) {
-					$item->printTree();
-				}
+                $count = self::buildTree($item, $count);
+                if ($printTree) {
+                    $item->printTree();
+                }
             }
         }
 
@@ -61,7 +61,7 @@ class EloquentTreeItem extends Eloquent
     // Get item by id
     private static function getItem($id)
     {
-        if (! isset(self::$items[$id])) {
+        if (!isset(self::$items[$id])) {
             throw new \Exception("Item $id not found");
         }
         return self::$items[$id];

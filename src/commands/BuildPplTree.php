@@ -1,6 +1,6 @@
 <?php
 
-namespace Mdhesari\LaravelCities\commands;
+namespace Mdhesari\LaravelCities\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;

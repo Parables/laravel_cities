@@ -1,8 +1,8 @@
 <?php
 
-namespace Mdhesari\LaravelCities\commands\helpers;
+namespace Mdhesari\LaravelCities\Commands\Helpers;
 
-class geoItem
+class GeoItem
 {
     public $data;
 
