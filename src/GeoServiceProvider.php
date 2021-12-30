@@ -16,6 +16,8 @@ class GeoServiceProvider extends ServiceProvider
      */
     protected $namespace;
 
+    public $customRoutes;
+
     public function boot()
     {
         $this->handleMigrations();
@@ -46,10 +48,15 @@ class GeoServiceProvider extends ServiceProvider
 
     private function handleRoutes()
     {
-        Route::prefix('api')
+        $route = Route::prefix('api')
             ->middleware('api')
-            ->namespace($this->namespace)
-            ->group(__DIR__ . '/../routes/api.php');
+            ->namespace($this->namespace);
+
+        if ($this->customRoutes) {
+            $route->group($this->customRoutes);
+        } else {
+            $route->group(__DIR__ . '/../routes/api.php');
+        }
     }
 
     /*--------------------------------------------------------------------------
