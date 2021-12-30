@@ -5,6 +5,7 @@ namespace Mdhesari\LaravelCities\Http\Controllers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
+use Mdhesari\LaravelCities\Models\Geo;
 
 class GeoController extends Controller
 {
