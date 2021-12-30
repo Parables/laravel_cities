@@ -2,10 +2,20 @@
 
 namespace Mdhesari\LaravelCities;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class GeoServiceProvider extends ServiceProvider
 {
+    /**
+     * The controller namespace for the application.
+     *
+     * When present, controller route declarations will automatically be prefixed with this namespace.
+     *
+     * @var string|null
+     */
+//    protected $namespace = 'Mdhesari\\LaravelCities\\Http\\Controllers';
+
     public function boot()
     {
         $this->handleMigrations();
@@ -36,7 +46,10 @@ class GeoServiceProvider extends ServiceProvider
 
     private function handleRoutes()
     {
-        include __DIR__ . '/../routes/api.php';
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(include __DIR__ . '/../routes/api.php');
     }
 
     /*--------------------------------------------------------------------------
