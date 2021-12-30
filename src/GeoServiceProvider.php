@@ -49,7 +49,7 @@ class GeoServiceProvider extends ServiceProvider
 
         // Optional: Publish the migrations:
         $this->publishes([
-            __DIR__ . '/migrations' => base_path('database/migrations'),
+            __DIR__ . '/../database/migrations' => base_path('database/migrations'),
         ], 'laravel-cities-migrations');
     }
 
