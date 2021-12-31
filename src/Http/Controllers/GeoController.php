@@ -172,8 +172,6 @@ class GeoController extends Controller
             }
         }
 
-        return api()->success(null, [
-            'item' => $geo,
-        ]);
+        return $geo;
     }
 }
