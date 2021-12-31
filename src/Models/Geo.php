@@ -21,7 +21,7 @@ class Geo extends EloquentTreeItem
     protected $casts = ['alternames' => 'array'];
 
     // Hide From JSON
-    protected $hidden = ['alternames', 'left', 'right', 'depth'];
+    protected $hidden = ['left', 'right', 'depth'];
 
     // ----------------------------------------------
     //  Scopes
