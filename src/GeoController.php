@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class GeoController extends Controller
 {
@@ -13,6 +14,62 @@ class GeoController extends Controller
     public function __construct()
     {
         Geo::$geoalternateOptions = new GeoalternateOptions(request());
+    public function searchCountries(Request $request) {
+        $params = $request->all();
+        $searchName = $params['searchName'];
+
+        $result = Geo::select('id', 'country as relation', 'name')
+            ->where('level', 'PCLI')
+            ->where(function($query) use ($searchName) {
+                $query->where('name', 'ilike', '%'.$searchName.'%')
+                    ->orWhere('alternames', 'ilike', '%'.$searchName.'%');
+            })
+            ->take(10)
+            ->get()
+            ->all();
+
+        return Response::json($result);
+    }
+
+    public function searchStates(Request $request) {
+        $params = $request->all();
+        $country = $params['country'];
+        $searchName = $params['searchName'];
+
+        $result = Geo::select('id','name', 'a1code as relation')
+            ->where('country', $country)
+            ->where('level', 'ADM1')
+            ->where(function($query) use ($searchName) {
+                $query->where('name', 'ilike', '%'.$searchName.'%')
+                    ->orWhere('alternames', 'ilike', '%'.$searchName.'%');
+            })
+            ->take(10)
+            ->get()
+            ->all();
+
+        return Response::json($result);
+    }
+
+    public function searchCities(Request $request) {
+        $params = $request->all();
+        $country = $params['country'];
+        $state = $params['state'];
+
+        $searchName = $params['searchName'];
+
+        $result = Geo::select('id','name', 'long', 'lat')
+            ->where('country', $country)
+            ->where('a1code', $state)
+            ->whereNot('level', 'ADM1')
+            ->where(function($query) use ($searchName) {
+                $query->where('name', 'ilike', '%'.$searchName.'%')
+                    ->orWhere('alternames', 'ilike', '%'.$searchName.'%');
+            })
+            //->take(10)
+            ->get()
+            ->all();
+
+        return Response::json($result);
     }
 
     // [Geo] Get an item by $id
