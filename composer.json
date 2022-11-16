@@ -1,5 +1,5 @@
 {
-    "name": "anglerfox/laravel_cities",
+    "name": "sergeydenwer/laravel_cities",
     "description": "Seed all countries/cities from geonames.org database. Searchable DB tree, ready to use API & a bonus vue.js component!",
     "keywords": ["laravel", "geonames.org", "geolocation", "countries", "cities"],
     "license": "MIT",
