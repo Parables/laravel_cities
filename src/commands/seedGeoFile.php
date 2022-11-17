@@ -113,8 +113,7 @@ class seedGeoFile extends Command
 
         $progressBar = new ProgressBar($this->output, 100);
 
-        while (($line = fgets($handle)) !== false && $count < 10000) {
-            $count++;
+        while (($line = fgets($handle)) !== false) {
             // ignore empty lines and comments
             if (! $line || $line === '' || strpos($line, '#') === 0) {
                 continue;
@@ -130,13 +129,13 @@ class seedGeoFile extends Command
 
             switch ($line[7]) {
                 case 'PCLI':    // Country
-                    //case 'PPLC':    // Capital
-                    //case 'ADM1':
-                    //case 'ADM2':
-                    // case 'ADM3':   // 8 sec
-                    //case 'PPLA':   // областные центры
-                    //  case 'PPLA2':  // Корсунь
-                    //    case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
+                case 'PPLC':    // Capital
+                case 'ADM1':
+                case 'ADM2':
+                case 'ADM3':   // 8 sec
+                case 'PPLA':   // областные центры
+                case 'PPLA2':  // Корсунь
+                case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
                     // 185 sec
                     $this->geoItems->add(new geoItem($line, $this->geoItems));
                     $count++;
