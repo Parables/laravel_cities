@@ -24,7 +24,7 @@ class geoItem
         $rawData[3] = json_encode(str_getcsv($rawData[3]), JSON_UNESCAPED_UNICODE);
         $this->data = $rawData;
         $this->geoItems = $geoItems;
-       // $this->fillTranslate($this->data[0]);
+        $this->fillTranslate($this->data[0]);
     }
 
     public function getId()
@@ -66,7 +66,7 @@ class geoItem
         $count = 0;
 
         while (($line = fgets($handle)) !== false) {
-            if (!$line || $line === '' || strpos($line, '#') === 0 || $line[0] != $id) {
+            if (!$line || $line === '' || strpos($line, '#') === 0 || $line[1] != $id) {
                 continue;
             }
 
