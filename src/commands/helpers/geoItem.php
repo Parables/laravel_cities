@@ -19,12 +19,14 @@ class geoItem
 
     private $geoItems;
 
-    public function __construct($rawData, $geoItems)
+    public function __construct($rawData, $geoItems, $translations)
     {
         $rawData[3] = json_encode(str_getcsv($rawData[3]), JSON_UNESCAPED_UNICODE);
         $this->data = $rawData;
         $this->geoItems = $geoItems;
-        $this->fillTranslate($this->data[0]);
+        $this->name_en = $translations[$this->data[0]]['en'] ?? null;
+        $this->name_ua = $translations[$this->data[0]]['uk'] ?? null;
+        $this->name_ru = $translations[$this->data[0]]['ru'] ?? null;
     }
 
     public function getId()
@@ -56,41 +58,5 @@ class geoItem
             $results[] = $this->geoItems->findGeoId($geoId);
         }
         return $results;
-    }
-
-    public function fillTranslate($id)
-    {
-        $fileName = storage_path('geo/alternateNamesV2.txt');
-        $filesize = filesize($fileName);
-        $handle = fopen($fileName, 'r');
-        $count = 0;
-
-        while (($line = fgets($handle)) !== false) {
-            if (!$line || $line === '' || strpos($line, '#') === 0) {
-                continue;
-            }
-
-            $line = explode("\t", $line);
-
-            if ($line[1] != $id) {
-                continue;
-            }
-
-            switch ($line[2]) {
-                case 'en':
-                    $this->name_en = $line[3];
-                    break;
-                case 'uk':
-                    $this->name_ua = $line[3];
-                    break;
-                case 'ru':
-                    $this->name_ru = $line[3];
-                    break;
-            }
-
-            if ($this->name_ru != null && $this->name_ua != null && $this->name_en != null) {
-                break;
-            }
-        }
     }
 }

@@ -21,11 +21,12 @@ class seedGeoFile extends Command
 
     private $geoItems;
 
+    private $translations;
+
     private $batch = 0;
 
     private $chunkSize = 1000;
 
-    private $trasnlations;
 
     public function __construct()
     {
@@ -35,6 +36,26 @@ class seedGeoFile extends Command
         $this->driver = strtolower(config("database.connections.{$connection}.driver"));
 
         $this->geoItems = new geoCollection();
+    }
+
+    public function fillTranslates()
+    {
+        $this->info("Load translates...\n");
+        $fileName = storage_path('geo/alternateNamesV2.txt');
+        $handle = fopen($fileName, 'r');
+
+        while (($line = fgets($handle)) !== false) {
+            if (!$line || $line === '' || strpos($line, '#') === 0) {
+                continue;
+            }
+
+            $line = explode("\t", $line);
+
+            if ($line[2] == 'en' || $line[2] == 'uk' || $line[2] == 'ru') {
+                $this -> translations[$line[1]][$line[2]] = $line[3];
+            }
+        }
+        $this->info("Translates loaded!\n");
     }
 
     public function sql($sql)
@@ -135,9 +156,8 @@ class seedGeoFile extends Command
                 case 'ADM3':   // 8 sec
                 case 'PPLA':   // областные центры
                 case 'PPLA2':  // Корсунь
-                case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
-                    // 185 sec
-                    $this->geoItems->add(new geoItem($line, $this->geoItems));
+                //case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
+                    $this->geoItems->add(new geoItem($line, $this->geoItems, $this->translations));
                     $count++;
                     break;
             }
@@ -200,6 +220,7 @@ class seedGeoFile extends Command
             DB::table('geo')->truncate();
         }
 
+        $this->fillTranslates();
         // Read Raw file
         $this->readFile($fileName, $country);
 
