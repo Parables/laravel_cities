@@ -113,7 +113,7 @@ class seedGeoFile extends Command
 
         $progressBar = new ProgressBar($this->output, 100);
 
-        while (($line = fgets($handle)) !== false && count < 10000) {
+        while (($line = fgets($handle)) !== false && $count < 10000) {
             // ignore empty lines and comments
             if (! $line || $line === '' || strpos($line, '#') === 0) {
                 continue;
