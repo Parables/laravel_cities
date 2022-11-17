@@ -23,6 +23,9 @@ class Geo extends Migration
             $table->text('alternames');
             $table->char('country', 2);
             $table->string('a1code', 25);
+            $table->string('name_en')->nullable();
+            $table->string('name_ua')->nullable();
+            $table->string('name_ru')->nullable();
             $table->char('level', 10);
             $table->bigInteger('population');
             $table->decimal('lat', 9, 6);
