@@ -127,13 +127,13 @@ class seedGeoFile extends Command
 
             switch ($line[7]) {
                 case 'PCLI':    // Country
-                case 'PPLC':    // Capital
-                case 'ADM1':
-                case 'ADM2':
-                case 'ADM3':   // 8 sec
-                case 'PPLA':   // областные центры
-                case 'PPLA2':  // Корсунь
-                case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
+                //case 'PPLC':    // Capital
+                //case 'ADM1':
+                //case 'ADM2':
+               // case 'ADM3':   // 8 sec
+                //case 'PPLA':   // областные центры
+              //  case 'PPLA2':  // Корсунь
+            //    case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
                     // 185 sec
                     $this->geoItems->add(new geoItem($line, $this->geoItems));
                     $count++;
@@ -310,6 +310,9 @@ class seedGeoFile extends Command
                 ':lat' => $item->data[4],
                 ':long' => $item->data[5],
                 ':timezone' => $item->data[17],
+                ':name_en' => $item->name_en,
+                ':name_ua' => $item->name_ua,
+                ':name_ru' => $item->name_ru,
             ];
 
             if ($stmt->execute($params) === false) {
