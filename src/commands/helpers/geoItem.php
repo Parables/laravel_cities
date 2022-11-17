@@ -66,19 +66,25 @@ class geoItem
         $count = 0;
 
         while (($line = fgets($handle)) !== false) {
-            if (!$line || $line === '' || strpos($line, '#') === 0 || $line[1] != $id) {
+            if (!$line || $line === '' || strpos($line, '#') === 0) {
+                continue;
+            }
+
+            $line = explode("\t", $line);
+
+            if ($line[1] != $id) {
                 continue;
             }
 
             switch ($line[2]) {
                 case 'en':
-                    $this->name_en = $line[4];
+                    $this->name_en = $line[3];
                     break;
                 case 'uk':
-                    $this->name_ua = $line[4];
+                    $this->name_ua = $line[3];
                     break;
                 case 'ru':
-                    $this->name_ru = $line[4];
+                    $this->name_ru = $line[3];
                     break;
             }
 

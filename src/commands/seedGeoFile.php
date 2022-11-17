@@ -30,7 +30,7 @@ class seedGeoFile extends Command
     public function __construct()
     {
         parent::__construct();
-        
+
         $connection = config('database.default');
         $this->driver = strtolower(config("database.connections.{$connection}.driver"));
 
@@ -81,7 +81,7 @@ class seedGeoFile extends Command
     protected function getColumnsAsStringDelimated($delimeter = '"', bool $onlyPrefix = false)
     {
         $columns = [
-            'id', 'parent_id', 'left', 'right', 'depth', 'name', 'alternames', 'country', 'a1code', 'level', 'population', 'lat', 'long', 'timezone',
+            'id', 'parent_id', 'left', 'right', 'depth', 'name', 'alternames', 'country', 'a1code', 'level', 'population', 'lat', 'long', 'timezone', 'name_en', 'name_ua', 'name_ru'
         ];
 
         $modifiedColumns = [];
@@ -89,14 +89,14 @@ class seedGeoFile extends Command
         foreach ($columns as $column) {
             $modifiedColumns[] = $delimeter . $column . (($onlyPrefix) ? '' : $delimeter);
         }
-        
+
         return implode(',', $modifiedColumns);
     }
 
     public function getDBStatement() : array
     {
         $sql = "INSERT INTO {$this->getFullyQualifiedTableName()} ( {$this->getColumnsAsStringDelimated()} ) VALUES ( {$this->getColumnsAsStringDelimated(':', true)} )";
-        
+
         if ($this->driver == 'mysql') {
             $sql = "INSERT INTO {$this->getFullyQualifiedTableName()} ( {$this->getColumnsAsStringDelimated('`')} ) VALUES ( {$this->getColumnsAsStringDelimated(':', true)} )";
         }
@@ -114,9 +114,9 @@ class seedGeoFile extends Command
         $progressBar = new ProgressBar($this->output, 100);
 
         while (($line = fgets($handle)) !== false && $count < 10000) {
+            $count++;
             // ignore empty lines and comments
             if (! $line || $line === '' || strpos($line, '#') === 0) {
-                $count++;
                 continue;
             }
 
@@ -130,13 +130,13 @@ class seedGeoFile extends Command
 
             switch ($line[7]) {
                 case 'PCLI':    // Country
-                //case 'PPLC':    // Capital
-                //case 'ADM1':
-                //case 'ADM2':
-               // case 'ADM3':   // 8 sec
-                //case 'PPLA':   // областные центры
-              //  case 'PPLA2':  // Корсунь
-            //    case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
+                    //case 'PPLC':    // Capital
+                    //case 'ADM1':
+                    //case 'ADM2':
+                    // case 'ADM3':   // 8 sec
+                    //case 'PPLA':   // областные центры
+                    //  case 'PPLA2':  // Корсунь
+                    //    case 'PPL':    // a city, town, village, or other agglomeration of buildings where people live and work
                     // 185 sec
                     $this->geoItems->add(new geoItem($line, $this->geoItems));
                     $count++;
@@ -149,7 +149,7 @@ class seedGeoFile extends Command
                 $this->processItems($country);
             }
         }
-        
+
         $this->processItems($country);
 
         $progressBar->finish();
@@ -182,7 +182,7 @@ class seedGeoFile extends Command
         if (! Schema::hasTable('geo')) {
             return;
         }
-        
+
         $start = microtime(true);
         $country = strtoupper($this->argument('country'));
         $sourceName = $country ? $country : 'allCountries';
@@ -212,7 +212,7 @@ class seedGeoFile extends Command
 
         // Store Tree in DB
         //$this->writeToDb();
-        
+
         //Lets get back MySQL FOREIGN_KEY_CHECKS to laravel
         if(DB::connection()->getDriverName() === 'mysql') {
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -236,7 +236,7 @@ class seedGeoFile extends Command
 //         if ($country != '') {
 //             $fileName = storage_path("geo/hierarchy-$country.txt");
 //         }
-        
+
         $this->info("Opening File '$fileName'</info>");
         $handle = fopen($fileName, 'r');
         $filesize = filesize($fileName);
@@ -289,7 +289,7 @@ class seedGeoFile extends Command
     {
         // Store Tree in DB
         $this->info('Writing in Database</info>');
-        
+
         [$stmt, $sql] = $this->getDBStatement();
 
         $count = 0;
