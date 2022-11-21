@@ -333,7 +333,7 @@ class seedGeoFile extends Command
                 ':lat' => $item->data[4],
                 ':long' => $item->data[5],
                 ':timezone' => $item->data[17],
-                ':name_en' => $item->name_en,
+                ':name_en' => trim($item->data[2]),
                 ':name_ua' => $item->name_ua,
                 ':name_ru' => $item->name_ru,
             ];

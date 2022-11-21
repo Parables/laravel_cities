@@ -137,7 +137,7 @@ class Geo extends EloquentTreeItem
     {
         return ($this->left > $item->left) && ($this->right < $item->right) && ($this->depth == $item->depth + 1);
     }
-    
+
     // is imediate Parent of $item ?
     public function isParentOf(Geo $item)
     {
